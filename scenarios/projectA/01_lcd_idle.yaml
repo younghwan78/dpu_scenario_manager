@@ -1,0 +1,39 @@
+# DPU Scenario: LCD Idle (Home Screen)
+# Minimal layer usage — wallpaper + system UI bars
+name: "LCD_Idle"
+description: "Home screen idle state — wallpaper with status bar and navigation bar"
+clock:
+  min_pixel_clock_mhz: 150.0
+  min_axi_clock_mhz: 200.0
+  aclk_mhz: 267.0
+  mif_min_freq_mhz: 546.0
+display:
+  resolution: "FHD+"
+  width: 1080
+  height: 2400
+  fps: 60
+layers:
+  - name: "Wallpaper"
+    source: "GPU"
+    format: "ARGB8888"
+    format_category: "ARGB"
+    size: { width: 1080, height: 2400 }
+    bw: { original_gbps: 0.59 }
+    compression_type: "None"
+    rdma_index: 0
+  - name: "StatusBar"
+    source: "GPU"
+    format: "ARGB8888"
+    format_category: "ARGB"
+    size: { width: 1080, height: 80 }
+    bw: { original_gbps: 0.02 }
+    compression_type: "None"
+    rdma_index: 1
+  - name: "NavigationBar"
+    source: "GPU"
+    format: "ARGB8888"
+    format_category: "ARGB"
+    size: { width: 1080, height: 120 }
+    bw: { original_gbps: 0.03 }
+    compression_type: "None"
+    rdma_index: 2

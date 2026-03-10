@@ -1,0 +1,22 @@
+# Virtual environment
+scripts/venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Work order (internal planning docs)
+work_order.md
+work_order_additional.md
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

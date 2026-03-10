@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DPU Scenario Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #0f0f14;
+  color: #e0e0e0;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  padding: 40px 48px 32px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #a78bfa, #818cf8, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+.header p {
+  font-size: 14px;
+  color: #888;
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 40px 48px;
+}
+
+/* Card */
+.card {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 32px;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(129, 140, 248, 0.15);
+  border-color: rgba(129, 140, 248, 0.3);
+}
+.card-icon {
+  font-size: 36px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #e0e0e0;
+  margin-bottom: 12px;
+}
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.badge-count {
+  background: rgba(167,139,250,0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(167,139,250,0.3);
+}
+.badge-source {
+  background: rgba(255,255,255,0.05);
+  color: #aaa;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.card-stat {
+  font-size: 13px;
+  color: #888;
+  margin-top: 8px;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 24px;
+  color: #555;
+  font-size: 12px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🖥️ DPU Scenario Dashboard</h1>
+  <p>{{ projects | length }} project(s) available — select a project to view its scenarios</p>
+</div>
+
+<div class="grid">
+  {% for p in projects %}
+  <a class="card" href="{{ p.name }}/index.html">
+    <div class="card-icon">📂</div>
+    <div class="card-title">{{ p.name }}</div>
+    <div class="card-stat">{{ p.scenario_count }} scenarios · {{ p.total_layers }} total layers</div>
+    <div class="card-meta">
+      <span class="badge badge-count">{{ p.scenario_count }} Scenarios</span>
+      {% for src in p.sources %}
+      <span class="badge badge-source">{{ src }}</span>
+      {% endfor %}
+    </div>
+  </a>
+  {% endfor %}
+</div>
+
+<div class="footer">
+  Generated on {{ generated_at }} — DPU Scenario Viewer
+</div>
+
+</body>
+</html>

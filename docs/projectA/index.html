@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>projectA — DPU Scenarios</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #0f0f14;
+  color: #e0e0e0;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  padding: 40px 48px 32px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #a78bfa, #818cf8, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.header p {
+  font-size: 14px;
+  color: #888;
+}
+.back-link {
+  font-size: 13px;
+  color: #818cf8;
+  text-decoration: none;
+}
+.back-link:hover { text-decoration: underline; }
+
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+  padding: 32px 48px;
+}
+
+/* Card */
+.card {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 24px;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(129, 140, 248, 0.15);
+  border-color: rgba(129, 140, 248, 0.3);
+}
+.card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #e0e0e0;
+  margin-bottom: 6px;
+}
+.card-desc {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.badge-layers {
+  background: rgba(167,139,250,0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(167,139,250,0.3);
+}
+.badge-display {
+  background: rgba(129,140,248,0.12);
+  color: #818cf8;
+  border: 1px solid rgba(129,140,248,0.25);
+}
+.badge-source {
+  background: rgba(255,255,255,0.05);
+  color: #aaa;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.badge-bw {
+  background: rgba(129,199,132,0.12);
+  color: #81C784;
+  border: 1px solid rgba(129,199,132,0.25);
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 24px;
+  color: #555;
+  font-size: 12px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>📁 projectA</h1>
+    <a class="back-link" href="../index.html">← All Projects</a>
+  </div>
+  <p>5 scenarios — click a card to view the topology diagram</p>
+</div>
+
+<div class="grid">
+  
+  <a class="card" href="views/lcd_idle.html">
+    <div class="card-title">LCD_Idle</div>
+    <div class="card-desc">Home screen idle state — wallpaper with status bar and navigation bar</div>
+    <div class="card-meta">
+      <span class="badge badge-layers">3 Layers</span>
+      <span class="badge badge-display">FHD+</span>
+      <span class="badge badge-bw">0.64 GB/s</span>
+      
+      <span class="badge badge-source">GPU</span>
+      
+    </div>
+  </a>
+  
+  <a class="card" href="views/video_playback.html">
+    <div class="card-title">Video_Playback</div>
+    <div class="card-desc">Full-screen video playback with UI overlay — CODEC supplies SBWC-compressed YUV</div>
+    <div class="card-meta">
+      <span class="badge badge-layers">5 Layers</span>
+      <span class="badge badge-display">FHD+</span>
+      <span class="badge badge-bw">0.75 GB/s</span>
+      
+      <span class="badge badge-source">CODEC</span>
+      
+      <span class="badge badge-source">GPU</span>
+      
+    </div>
+  </a>
+  
+  <a class="card" href="views/camera_preview.html">
+    <div class="card-title">Camera_Preview</div>
+    <div class="card-desc">Camera application preview mode — ISP preview stream with GPU UI controls</div>
+    <div class="card-meta">
+      <span class="badge badge-layers">6 Layers</span>
+      <span class="badge badge-display">FHD+</span>
+      <span class="badge badge-bw">1.45 GB/s</span>
+      
+      <span class="badge badge-source">GPU</span>
+      
+      <span class="badge badge-source">ISP</span>
+      
+    </div>
+  </a>
+  
+  <a class="card" href="views/camera_recording.html">
+    <div class="card-title">Camera_Recording</div>
+    <div class="card-desc">Camera recording mode — ISP preview, CODEC last-capture thumbnail, and GPU controls</div>
+    <div class="card-meta">
+      <span class="badge badge-layers">8 Layers</span>
+      <span class="badge badge-display">FHD+</span>
+      <span class="badge badge-bw">0.84 GB/s</span>
+      
+      <span class="badge badge-source">CODEC</span>
+      
+      <span class="badge badge-source">GPU</span>
+      
+      <span class="badge badge-source">ISP</span>
+      
+    </div>
+  </a>
+  
+  <a class="card" href="views/pip_mode.html">
+    <div class="card-title">PIP_Mode</div>
+    <div class="card-desc">Picture-in-Picture — main video + PIP video (dual CODEC) with GPU UI overlay</div>
+    <div class="card-meta">
+      <span class="badge badge-layers">10 Layers</span>
+      <span class="badge badge-display">WQHD+</span>
+      <span class="badge badge-bw">2.79 GB/s</span>
+      
+      <span class="badge badge-source">CODEC</span>
+      
+      <span class="badge badge-source">GPU</span>
+      
+    </div>
+  </a>
+  
+</div>
+
+<div class="footer">
+  Generated on 2026-03-11 00:54 — DPU Scenario Viewer
+</div>
+
+</body>
+</html>
