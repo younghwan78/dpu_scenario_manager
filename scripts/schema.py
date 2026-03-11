@@ -26,6 +26,17 @@ class BufferSize(BaseModel):
         return f"{self.width}×{self.height}"
 
 
+class LayerDst(BaseModel):
+    """Display output coordinates for a layer (destination rect)."""
+    x: int
+    y: int
+    width: int
+    height: int
+
+    def __str__(self) -> str:
+        return f"({self.x},{self.y},{self.width},{self.height})"
+
+
 class BufferBW(BaseModel):
     """Bandwidth information (GB/s)."""
     original_gbps: float
@@ -68,6 +79,7 @@ class Layer(BaseModel):
     format: str                                 # "NV12", "ARGB8888", ...
     format_category: str                        # "YUV" | "ARGB"
     size: BufferSize
+    dst: Optional[LayerDst] = None              # display output rect; None → (0,0,w,h)
     bw: BufferBW
     compression_type: str = "None"              # "SBWC", "SAJC", "None"
     rdma_index: int = Field(ge=0, le=15)        # 0-15 range hint (soft)

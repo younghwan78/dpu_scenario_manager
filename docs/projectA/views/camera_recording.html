@@ -62,12 +62,13 @@ body {
   position: relative;
   background: #12121a;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Removed flex-center so transform math works correctly */
 }
 #canvas svg {
-  /* sized by JS resizeCanvas() */
+  position: absolute;
+  top: 0; left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
 }
 
 /* ========== Side Panel ========== */
@@ -368,6 +369,21 @@ body {
       </div>
       <div style="margin-top:16px;"></div>
 
+      <h3>Legend — Display dst</h3>
+      <div class="legend-item">
+        <span class="legend-swatch" style="background:rgba(129,199,132,0.5);"></span>
+        <span>dst specified</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-swatch" style="background:rgba(255,255,255,0.18);"></span>
+        <span>dst default (full-size)</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-swatch" style="background:rgba(239,83,80,0.4); border-color:#EF5350; border-style:dashed;"></span>
+        <span style="color:#EF5350;">⚠ Out of Bounds</span>
+      </div>
+      <div style="margin-top:16px;"></div>
+
       <h3>Summary</h3>
       <table class="info-table">
         <tr><td>Total Layers</td><td>8</td></tr>
@@ -389,6 +405,7 @@ body {
           <th>Format</th>
           <th>Category</th>
           <th>Size</th>
+          <th>Dst</th>
           <th>BW (orig)</th>
           <th>BW (comp)</th>
           <th>Compression</th>
@@ -409,6 +426,7 @@ body {
             </span>
           </td>
           <td>1080×2400</td>
+          <td style="font-size:11px;color:#888;">(default)</td>
           <td class="bw-val">0.470</td>
           <td class="bw-val bw-compressed">
             0.280
@@ -433,6 +451,7 @@ body {
             </span>
           </td>
           <td>540×1200</td>
+          <td style="font-size:11px;color:#888;">(default)</td>
           <td class="bw-val">0.230</td>
           <td class="bw-val bw-compressed">
             0.140
@@ -457,6 +476,7 @@ body {
             </span>
           </td>
           <td>256×256</td>
+          <td style="font-size:11px;color:#888;">(default)</td>
           <td class="bw-val">0.010</td>
           <td class="bw-val ">
             —
@@ -481,6 +501,7 @@ body {
             </span>
           </td>
           <td>128×128</td>
+          <td style="font-size:11px;color:#888;">(default)</td>
           <td class="bw-val">0.005</td>
           <td class="bw-val ">
             —
@@ -505,6 +526,7 @@ body {
             </span>
           </td>
           <td>1080×2400</td>
+          <td style="font-size:11px;color:#888;">(default)</td>
           <td class="bw-val">0.590</td>
           <td class="bw-val bw-compressed">
             0.350
@@ -529,6 +551,7 @@ body {
             </span>
           </td>
           <td>200×60</td>
+          <td style="font-size:11px;color:#888;">(default)</td>
           <td class="bw-val">0.003</td>
           <td class="bw-val ">
             —
@@ -553,6 +576,7 @@ body {
             </span>
           </td>
           <td>1080×80</td>
+          <td style="font-size:11px;color:#888;">(default)</td>
           <td class="bw-val">0.020</td>
           <td class="bw-val ">
             —
@@ -577,6 +601,7 @@ body {
             </span>
           </td>
           <td>1080×120</td>
+          <td style="font-size:11px;color:#888;">(default)</td>
           <td class="bw-val">0.030</td>
           <td class="bw-val ">
             —
@@ -597,7 +622,7 @@ body {
 // ============================================================
 // Scenario data injected by Jinja2
 // ============================================================
-const SCENARIO = {"name": "Camera_Recording", "description": "Camera recording mode — ISP preview, CODEC last-capture thumbnail, and GPU controls", "clock": {"min_pixel_clock_mhz": 150.0, "min_axi_clock_mhz": 267.0, "aclk_mhz": 533.0, "mif_min_freq_mhz": 1066.0}, "display": {"resolution": "FHD+", "width": 1080, "height": 2400, "fps": 60}, "layers": [{"name": "Preview_Y", "source": "ISP", "format": "NV12", "format_category": "YUV", "size": {"width": 1080, "height": 2400}, "bw": {"original_gbps": 0.47, "compressed_gbps": 0.28}, "compression_type": "SBWC", "rdma_index": 0}, {"name": "Preview_UV", "source": "ISP", "format": "NV12", "format_category": "YUV", "size": {"width": 540, "height": 1200}, "bw": {"original_gbps": 0.23, "compressed_gbps": 0.14}, "compression_type": "SBWC", "rdma_index": 1}, {"name": "Thumbnail_Y", "source": "CODEC", "format": "NV12", "format_category": "YUV", "size": {"width": 256, "height": 256}, "bw": {"original_gbps": 0.01, "compressed_gbps": null}, "compression_type": "None", "rdma_index": 2}, {"name": "Thumbnail_UV", "source": "CODEC", "format": "NV12", "format_category": "YUV", "size": {"width": 128, "height": 128}, "bw": {"original_gbps": 0.005, "compressed_gbps": null}, "compression_type": "None", "rdma_index": 3}, {"name": "Camera_UI", "source": "GPU", "format": "ARGB8888", "format_category": "ARGB", "size": {"width": 1080, "height": 2400}, "bw": {"original_gbps": 0.59, "compressed_gbps": 0.35}, "compression_type": "SAJC", "rdma_index": 4}, {"name": "Rec_Indicator", "source": "GPU", "format": "ARGB8888", "format_category": "ARGB", "size": {"width": 200, "height": 60}, "bw": {"original_gbps": 0.003, "compressed_gbps": null}, "compression_type": "None", "rdma_index": 5}, {"name": "StatusBar", "source": "GPU", "format": "ARGB8888", "format_category": "ARGB", "size": {"width": 1080, "height": 80}, "bw": {"original_gbps": 0.02, "compressed_gbps": null}, "compression_type": "None", "rdma_index": 6}, {"name": "NavigationBar", "source": "GPU", "format": "ARGB8888", "format_category": "ARGB", "size": {"width": 1080, "height": 120}, "bw": {"original_gbps": 0.03, "compressed_gbps": null}, "compression_type": "None", "rdma_index": 7}]};
+const SCENARIO = {"name": "Camera_Recording", "description": "Camera recording mode — ISP preview, CODEC last-capture thumbnail, and GPU controls", "clock": {"min_pixel_clock_mhz": 150.0, "min_axi_clock_mhz": 267.0, "aclk_mhz": 533.0, "mif_min_freq_mhz": 1066.0}, "display": {"resolution": "FHD+", "width": 1080, "height": 2400, "fps": 60}, "layers": [{"name": "Preview_Y", "source": "ISP", "format": "NV12", "format_category": "YUV", "size": {"width": 1080, "height": 2400}, "dst": null, "bw": {"original_gbps": 0.47, "compressed_gbps": 0.28}, "compression_type": "SBWC", "rdma_index": 0}, {"name": "Preview_UV", "source": "ISP", "format": "NV12", "format_category": "YUV", "size": {"width": 540, "height": 1200}, "dst": null, "bw": {"original_gbps": 0.23, "compressed_gbps": 0.14}, "compression_type": "SBWC", "rdma_index": 1}, {"name": "Thumbnail_Y", "source": "CODEC", "format": "NV12", "format_category": "YUV", "size": {"width": 256, "height": 256}, "dst": null, "bw": {"original_gbps": 0.01, "compressed_gbps": null}, "compression_type": "None", "rdma_index": 2}, {"name": "Thumbnail_UV", "source": "CODEC", "format": "NV12", "format_category": "YUV", "size": {"width": 128, "height": 128}, "dst": null, "bw": {"original_gbps": 0.005, "compressed_gbps": null}, "compression_type": "None", "rdma_index": 3}, {"name": "Camera_UI", "source": "GPU", "format": "ARGB8888", "format_category": "ARGB", "size": {"width": 1080, "height": 2400}, "dst": null, "bw": {"original_gbps": 0.59, "compressed_gbps": 0.35}, "compression_type": "SAJC", "rdma_index": 4}, {"name": "Rec_Indicator", "source": "GPU", "format": "ARGB8888", "format_category": "ARGB", "size": {"width": 200, "height": 60}, "dst": null, "bw": {"original_gbps": 0.003, "compressed_gbps": null}, "compression_type": "None", "rdma_index": 5}, {"name": "StatusBar", "source": "GPU", "format": "ARGB8888", "format_category": "ARGB", "size": {"width": 1080, "height": 80}, "dst": null, "bw": {"original_gbps": 0.02, "compressed_gbps": null}, "compression_type": "None", "rdma_index": 6}, {"name": "NavigationBar", "source": "GPU", "format": "ARGB8888", "format_category": "ARGB", "size": {"width": 1080, "height": 120}, "dst": null, "bw": {"original_gbps": 0.03, "compressed_gbps": null}, "compression_type": "None", "rdma_index": 7}]};
 
 // ============================================================
 // Layout constants
@@ -606,7 +631,8 @@ const PADDING = 40;
 const SOURCE_W = 140, SOURCE_H_MIN = 60;
 const BUF_W = 120, BUF_H = 42;
 const DPU_W = 100, DPU_PORT_H = 28, DPU_PAD = 16;
-const DISPLAY_W = 130, DISPLAY_H = 100;
+// Display is sized dynamically based on aspect ratio
+const DISPLAY_RENDER_H = 320;  // visual height for the display panel
 const COL_GAP = 100;
 const ROW_GAP = 10;
 
@@ -642,13 +668,18 @@ const totalBufH = numPorts * (BUF_H + ROW_GAP) - ROW_GAP;
 const canvasH = Math.max(dpuH, totalBufH, 300) + PADDING * 2;
 
 // Column X positions
+// Compute display dimensions from aspect ratio
+const dispAspect = SCENARIO.display.width / SCENARIO.display.height;
+const DISPLAY_H = DISPLAY_RENDER_H;
+const DISPLAY_W = Math.round(DISPLAY_RENDER_H * dispAspect);
+
 const col = {
   source: PADDING,
   buf:    PADDING + SOURCE_W + COL_GAP,
   dpu:    PADDING + SOURCE_W + COL_GAP + BUF_W + COL_GAP,
   display: PADDING + SOURCE_W + COL_GAP + BUF_W + COL_GAP + DPU_W + COL_GAP,
 };
-const totalW = col.display + DISPLAY_W + PADDING;
+const totalW = col.display + DISPLAY_W + PADDING + 100; // extra space for isometric offset
 
 // Source positions — stack vertically, centered
 function computeSourcePositions() {
@@ -691,9 +722,11 @@ const dispPos = { x: col.display, y: (canvasH - DISPLAY_H) / 2, w: DISPLAY_W, h:
 // Render SVG
 // ============================================================
 const svg = document.getElementById('diagram');
+// Avoid setting a hardcoded inline width/height here; use viewBox and CSS
 svg.setAttribute('viewBox', `0 0 ${totalW} ${canvasH}`);
-svg.setAttribute('width', totalW);
-svg.setAttribute('height', canvasH);
+svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+svg.style.width = totalW + 'px';
+svg.style.height = canvasH + 'px';
 
 function svgEl(tag, attrs = {}) {
   const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
@@ -829,37 +862,134 @@ Object.entries(bufPos).forEach(([rdma, p]) => {
   svg.appendChild(g);
 })();
 
-// --- Draw Display block ---
+// --- Draw Display block (Winscope-style stacked layers) ---
 (function drawDisplay() {
   const g = svgEl('g', { class: 'node-group' });
   const p = dispPos;
+  const dw = SCENARIO.display.width;
+  const dh = SCENARIO.display.height;
+  const scaleX = p.w / dw;
+  const scaleY = p.h / dh;
 
+  // Isometric offset per layer (3D stack effect)
+  const ISO_DX = 6;
+  const ISO_DY = -5;
+
+  // Colors for layers with/without dst
+  const DST_COLORS = {
+    YUV:  { fill: 'rgba(255,183,77,0.35)', stroke: 'rgba(255,183,77,0.7)' },
+    ARGB: { fill: 'rgba(129,199,132,0.35)', stroke: 'rgba(129,199,132,0.7)' },
+  };
+  const NO_DST_COLOR = { fill: 'rgba(255,255,255,0.12)', stroke: 'rgba(255,255,255,0.35)' };
+
+  // Display panel background (device screen)
   g.appendChild(svgEl('rect', {
     class: 'node-rect',
     x: p.x, y: p.y, width: p.w, height: p.h,
-    fill: COLOR.display.fill, stroke: COLOR.display.stroke, 'stroke-width': 1.5
+    fill: '#0a0a12', stroke: COLOR.display.stroke, 'stroke-width': 2,
+    rx: 6, ry: 6
   }));
 
+  // Display label above
   g.appendChild(svgEl('text', {
     class: 'node-label',
-    x: p.x + p.w / 2, y: p.y + p.h / 2 - 16,
-    fill: COLOR.display.text, 'font-size': '14px'
+    x: p.x + p.w / 2, y: p.y - 12,
+    fill: COLOR.display.text, 'font-size': '13px'
   }));
-  g.lastChild.textContent = 'Display';
+  g.lastChild.textContent = `Display ${SCENARIO.display.resolution} (${dw}×${dh} ${SCENARIO.display.fps}fps)`;
 
-  g.appendChild(svgEl('text', {
-    class: 'node-sublabel',
-    x: p.x + p.w / 2, y: p.y + p.h / 2 + 4,
-    fill: '#aaa', 'font-size': '12px'
-  }));
-  g.lastChild.textContent = SCENARIO.display.resolution;
+  // Render layers bottom-to-top (rdma_index ascending = back to front)
+  const sorted = [...layers].sort((a, b) => a.rdma_index - b.rdma_index);
+  const totalLayers = sorted.length;
 
-  g.appendChild(svgEl('text', {
-    class: 'node-sublabel',
-    x: p.x + p.w / 2, y: p.y + p.h / 2 + 22,
-    fill: '#888', 'font-size': '10px'
-  }));
-  g.lastChild.textContent = `${SCENARIO.display.width}×${SCENARIO.display.height} ${SCENARIO.display.fps}fps`;
+  sorted.forEach((l, i) => {
+    const hasDst = l.dst != null;
+    const dst = hasDst
+      ? l.dst
+      : { x: 0, y: 0, width: l.size.width, height: l.size.height };
+
+    // Scale dst to display panel coordinates
+    const rx = p.x + dst.x * scaleX;
+    const ry = p.y + dst.y * scaleY;
+    const rw = dst.width * scaleX;
+    const rh = dst.height * scaleY;
+
+    // Check if layer is out of bounds against actual configured resolution
+    const isOutOfBounds = hasDst && (dst.x < 0 || dst.y < 0 || 
+                          dst.x + dst.width > SCENARIO.display.width || 
+                          dst.y + dst.height > SCENARIO.display.height);
+
+    // Isometric offset: higher layers get more offset
+    const ox = i * ISO_DX;
+    const oy = i * ISO_DY;
+
+    let color = hasDst
+      ? (DST_COLORS[l.format_category] || DST_COLORS.ARGB)
+      : NO_DST_COLOR;
+      
+    if (isOutOfBounds) {
+      color = { fill: 'rgba(239, 83, 80, 0.4)', stroke: '#EF5350' }; // Red warning color
+    }
+
+    // Layer rectangle
+    g.appendChild(svgEl('rect', {
+      class: 'display-layer-rect',
+      x: rx + ox, y: ry + oy, width: rw, height: rh,
+      fill: color.fill,
+      stroke: color.stroke,
+      'stroke-width': isOutOfBounds ? 2 : 1.2,
+      'stroke-dasharray': isOutOfBounds ? '4,3' : 'none',
+      rx: 3, ry: 3,
+      'data-rdma': l.rdma_index,
+      'data-oob': isOutOfBounds ? 'true' : 'false'
+    }));
+
+    // Layer name label (inside the rect, centered)
+    const labelX = rx + ox + rw / 2;
+    const labelY = ry + oy + rh / 2;
+    // Only show label if rect is big enough
+    if (rw > 30 && rh > 14) {
+      g.appendChild(svgEl('text', {
+        class: 'display-layer-label',
+        x: labelX, y: labelY,
+        fill: hasDst ? '#fff' : '#999',
+        'font-size': rh > 30 ? '9px' : '7px',
+        'font-family': "'Inter', sans-serif",
+        'font-weight': '600',
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        'pointer-events': 'none',
+        'data-rdma': l.rdma_index
+      }));
+      g.lastChild.textContent = l.name;
+    }
+  });
+
+  // Layer name labels below the display (stacked like Winscope)
+  const labelStartY = p.y + p.h + 16;
+  const lineHeight = 14;
+  [...sorted].reverse().forEach((l, i) => {
+    const hasDst = l.dst != null;
+    const isOutOfBounds = hasDst && (l.dst.x < 0 || l.dst.y < 0 || 
+                          l.dst.x + l.dst.width > SCENARIO.display.width || 
+                          l.dst.y + l.dst.height > SCENARIO.display.height);
+                          
+    g.appendChild(svgEl('text', {
+      x: p.x + p.w / 2 + (totalLayers - 1 - i) * ISO_DX,
+      y: labelStartY + i * lineHeight,
+      fill: isOutOfBounds ? '#EF5350' : (hasDst ? '#ccc' : '#666'),
+      'font-size': '9px',
+      'font-family': "'Inter', sans-serif",
+      'font-weight': hasDst ? '500' : '400',
+      'text-anchor': 'middle',
+      'dominant-baseline': 'hanging',
+      'pointer-events': 'none'
+    }));
+    
+    let labelText = l.name + (hasDst ? '' : ' (default)');
+    if (isOutOfBounds) labelText += ' ⚠ OUT OF BOUNDS';
+    g.lastChild.textContent = labelText;
+  });
 
   svg.appendChild(g);
 })();
@@ -995,24 +1125,111 @@ function highlightEdge(rdma, on) {
     el.style.filter = on ? 'drop-shadow(0 0 4px rgba(167,139,250,0.6))' : '';
     el.style.fillOpacity = on ? '0.4' : '';
   });
+  // Highlight Display target rectangle
+  document.querySelectorAll(`.display-layer-rect[data-rdma="${rdma}"]`).forEach(el => {
+    if (on) {
+      el.dataset.origStroke = el.getAttribute('stroke');
+      el.dataset.origStrokeWidth = el.getAttribute('stroke-width');
+      el.setAttribute('stroke', '#EF5350');
+      el.setAttribute('stroke-width', '3');
+      // Bring layer and its inline label to front
+      el.parentNode.appendChild(el);
+      const label = el.parentNode.querySelector(`.display-layer-label[data-rdma="${rdma}"]`);
+      if (label) el.parentNode.appendChild(label);
+    } else {
+      el.setAttribute('stroke', el.dataset.origStroke || '');
+      el.setAttribute('stroke-width', el.dataset.origStrokeWidth || '1.2');
+    }
+  });
 }
 
 // ============================================================
-// Canvas resize — fit SVG to container
+// Canvas Zoom and Pan
 // ============================================================
-function resizeCanvas() {
-  const container = document.getElementById('canvas');
-  const svgEl = document.getElementById('diagram');
+let scale = 1;
+let translateX = 0;
+let translateY = 0;
+let isPanning = false;
+let startX, startY;
+
+const container = document.getElementById('canvas');
+const diagramEl = document.getElementById('diagram');
+
+// Setup initial fit
+function initializeView() {
   const cw = container.clientWidth;
   const ch = container.clientHeight;
-
-  // Maintain aspect ratio, fit within container
-  const scale = Math.min(cw / totalW, ch / canvasH);
-  svgEl.style.width = totalW * scale + 'px';
-  svgEl.style.height = canvasH * scale + 'px';
+  scale = Math.min(cw / totalW, ch / canvasH) * 0.95; // 95% fit
+  translateX = (cw - totalW * scale) / 2;
+  translateY = (ch - canvasH * scale) / 2;
+  updateTransform();
 }
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+
+function updateTransform() {
+  diagramEl.style.transform = `matrix(${scale}, 0, 0, ${scale}, ${translateX}, ${translateY})`;
+}
+
+// Mouse Wheel Zoom
+container.addEventListener('wheel', (e) => {
+  e.preventDefault(); // Prevent page scroll
+  
+  // Calculate zoom factor
+  const zoomFactor = 1.1;
+  const direction = e.deltaY < 0 ? 1 : -1;
+  const oldScale = scale;
+  
+  if (direction > 0) {
+    scale *= zoomFactor;
+  } else {
+    scale /= zoomFactor;
+  }
+  
+  // Constrain scale to reasonable limits
+  scale = Math.max(0.1, Math.min(scale, 5));
+  
+  // Calculate cursor position relative to container
+  const rect = container.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+  
+  // Math: To keep the point under the cursor stationary, 
+  // adjust the translation by the delta of how much the point moved during scale
+  translateX = mouseX - (mouseX - translateX) * (scale / oldScale);
+  translateY = mouseY - (mouseY - translateY) * (scale / oldScale);
+  
+  updateTransform();
+}, { passive: false });
+
+// Mouse Drag/Pan
+container.addEventListener('mousedown', (e) => {
+  // Only pan on left click or middle click
+  if (e.button !== 0 && e.button !== 1) return;
+  // Ignore if clicking on a node that might have other interactions
+  if (e.target.closest('.node-group')) return;
+  
+  isPanning = true;
+  startX = e.clientX - translateX;
+  startY = e.clientY - translateY;
+  container.style.cursor = 'grabbing';
+});
+
+window.addEventListener('mousemove', (e) => {
+  if (!isPanning) return;
+  translateX = e.clientX - startX;
+  translateY = e.clientY - startY;
+  updateTransform();
+});
+
+window.addEventListener('mouseup', () => {
+  if (isPanning) {
+    isPanning = false;
+    container.style.cursor = 'default';
+  }
+});
+
+// Initialize on load and resize
+window.addEventListener('resize', initializeView);
+initializeView();
 </script>
 </body>
 </html>
